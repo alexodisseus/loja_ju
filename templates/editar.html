@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JS Personalizados - Garrafa Fresh</title>
+    <style>
+        :root {
+            --primary-color: #e91e63;
+            --bg-light: #f8f8f8;
+            --bottle-color: #1a1a1a; /* Cor inicial */
+        }
+
+        body { font-family: 'Helvetica Neue', Arial, sans-serif; margin: 0; background: #fff; }
+
+        .container {
+            display: flex;
+            max-width: 1200px;
+            margin: 40px auto;
+            gap: 50px;
+            padding: 0 20px;
+        }
+
+        /* --- COLUNA ESQUERDA: VISUALIZAÇÃO --- */
+        .preview-section {
+            flex: 1.2;
+            position: sticky;
+            top: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .main-image-container {
+            width: 100%;
+            height: 600px;
+            background: var(--bg-light);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 10px;
+            position: relative;
+        }
+
+        /* Estrutura da Garrafa */
+        .bottle-preview {
+            position: relative;
+            width: 160px;
+            height: 400px;
+            background-color: var(--bottle-color); /* Variável de cor */
+            border-radius: 60px 60px 30px 30px;
+            transition: background-color 0.3s ease;
+            box-shadow: inset -10px 0 20px rgba(0,0,0,0.2);
+        }
+
+        .bottle-cap {
+            position: absolute;
+            top: -5px; width: 100%; height: 50px;
+            background: #333; border-radius: 20px 20px 5px 5px;
+            z-index: 5;
+        }
+
+        #user-photo {
+            position: absolute;
+            top: 100px; left: 10%;
+            width: 80%; height: 200px;
+            object-fit: cover;
+            z-index: 2;
+            border-radius: 5px;
+            mask-image: linear-gradient(to bottom, black 80%, transparent); /* Efeito suave */
+        }
+
+        /* --- COLUNA DIREITA: INFOS --- */
+        .info-section { flex: 1; }
+
+        .breadcrumb { font-size: 12px; color: #888; margin-bottom: 10px; }
+        .product-title { font-size: 32px; font-weight: bold; margin: 0; }
+        .price { font-size: 28px; font-weight: bold; margin: 20px 0; }
+
+        /* Seleção de Cores */
+        .section-title { font-size: 14px; font-weight: bold; text-transform: uppercase; margin-bottom: 10px; }
+        .color-options { display: flex; gap: 10px; margin-bottom: 30px; }
+        .color-dot {
+            width: 35px; height: 35px; border-radius: 50%;
+            cursor: pointer; border: 2px solid #ddd;
+            transition: 0.2s;
+        }
+        .color-dot:hover { transform: scale(1.1); }
+        .color-dot.active { border-color: #000; }
+
+        /* Seletor de Quantidade */
+        .quantity-selector {
+            display: flex; align-items: center;
+            border: 1px solid #ddd; width: fit-content;
+            margin-bottom: 20px; border-radius: 5px;
+        }
+        .quantity-selector button {
+            padding: 10px 15px; border: none; background: none; cursor: pointer; font-size: 18px;
+        }
+        .quantity-selector input {
+            width: 40px; text-align: center; border: none; font-size: 16px; outline: none;
+        }
+
+        /* Botão Principal */
+        .btn-buy {
+            width: 100%; padding: 20px;
+            background: #000; color: #fff;
+            border: none; font-weight: bold; font-size: 16px;
+            border-radius: 5px; cursor: pointer; margin-bottom: 15px;
+        }
+
+        .btn-customize {
+            width: 100%; padding: 15px;
+            background: #fff; color: #000;
+            border: 2px solid #000; font-weight: bold;
+            border-radius: 5px; cursor: pointer;
+        }
+
+        #file-upload { display: none; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    
+    <div class="preview-section">
+        <div class="breadcrumb">Home > Garrafas > Garrafa Fresh</div>
+        <div class="main-image-container">
+            <div class="bottle-preview" id="bottle-body">
+                <div class="bottle-cap"></div>
+                <img id="user-photo" src="https://via.placeholder.com/150?text=Sua+Foto" alt="Personalização">
+            </div>
+        </div>
+    </div>
+
+    <div class="info-section">
+        <h1 class="product-title">Garrafa Térmica Fresh - Personalizada</h1>
+        <div class="price">R$ 159,90</div>
+
+        <div class="section-title">Escolha a cor da garrafa:</div>
+        <div class="color-options">
+            <div class="color-dot active" style="background: #1a1a1a;" onclick="changeColor('#1a1a1a', this)"></div>
+            <div class="color-dot" style="background: #e91e63;" onclick="changeColor('#e91e63', this)"></div>
+            <div class="color-dot" style="background: #2196f3;" onclick="changeColor('#2196f3', this)"></div>
+            <div class="color-dot" style="background: #4caf50;" onclick="changeColor('#4caf50', this)"></div>
+        </div>
+
+        <div class="section-title">Quantidade:</div>
+        <div class="quantity-selector">
+            <button onclick="changeQty(-1)">-</button>
+            <input type="text" id="qty" value="1" readonly>
+            <button onclick="changeQty(1)">+</button>
+        </div>
+
+        <input type="file" id="file-upload" accept="image/*">
+        <button class="btn-customize" onclick="document.getElementById('file-upload').click()">
+            SUBIR MINHA FOTO
+        </button>
+        
+        <br><br>
+        
+        <button class="btn-buy">ADICIONAR AO CARRINHO</button>
+
+        <p style="font-size: 14px; color: #666; line-height: 1.6;">
+            A Garrafa Fresh mantém a sua bebida gelada por até 24h. 
+            Personalize com a sua foto favorita e leve exclusividade para o seu treino.
+        </p>
+    </div>
+
+</div>
+
+<script>
+    // Lógica para mudar a cor da garrafa
+    function changeColor(color, element) {
+        document.getElementById('bottle-body').style.backgroundColor = color;
+        
+        // Remove a classe 'active' de todos e adiciona ao clicado
+        document.querySelectorAll('.color-dot').forEach(dot => dot.classList.remove('active'));
+        element.classList.add('active');
+    }
+
+    // Lógica de Quantidade
+    function changeQty(val) {
+        let qtyInput = document.getElementById('qty');
+        let currentQty = parseInt(qtyInput.value);
+        if (currentQty + val >= 1) {
+            qtyInput.value = currentQty + val;
+        }
+    }
+
+    // Lógica de Upload da Foto
+    const fileUpload = document.getElementById('file-upload');
+    const userPhoto = document.getElementById('user-photo');
+
+    fileUpload.addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                userPhoto.src = event.target.result;
+            }
+            reader.readAsDataURL(file);
+        }
+    });
+</script>
+
+</body>
+</html>

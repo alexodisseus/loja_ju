@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Pagamento</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+
+<div class="container mt-5">
+
+    <div class="card shadow mx-auto" style="max-width: 400px;">
+        <div class="card-body text-center">
+
+            <h4 class="mb-3">💳 Pagamento Pix</h4>
+
+            <p><b>{{ produto.nome }}</b></p>
+            <p class="text-success fs-5">R$ {{ "%.2f"|format(produto.preco) }}</p>
+
+            <img src="data:image/png;base64,{{ qr_code }}" class="img-fluid mb-3">
+
+            <textarea class="form-control mb-3" rows="3">{{ codigo_pix }}</textarea>
+
+            <a href="/confirmar/{{ produto.id }}" class="btn btn-success w-100 mb-2">
+                ✔ Já paguei
+            </a>
+
+            <a href="/" class="btn btn-secondary w-100">
+                Voltar
+            </a>
+
+        </div>
+    </div>
+
+</div>
+
+</body>
+</html>
